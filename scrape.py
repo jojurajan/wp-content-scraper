@@ -8,7 +8,7 @@ class UrlOpener(object):
     def __init__(self, header_tuples=None):
         self.opener = urllib2.build_opener()
         if header_tuples is None:
-            self.opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+            self.opener.addheaders = [('User-agent', 'Opera/9.80 (X11; Linux i686; Ubuntu/14.10) Presto/2.12.388 Version/12.16')]
         else:
             self.opener.addheaders = [header_tuples]
 
@@ -29,10 +29,15 @@ class WPContentParser(object):
             try:
                 href = link.get('href')
                 if self._is_valid(href):
-                    self._write(href, level)
+                    # self._write(href, level)
                     if self._is_file(href):
                         self._save_link(base_url, href, file_pointer)
                     else:
+                        # Not required for Apache based servers
+                        # if base_url in href:
+                        #     page_url = href
+                        # else:
+                        #     page_url = base_url + href
                         page_url = base_url + href
                         self._parse_links(self.fetch.openUrl(page_url), page_url, file_pointer, level + 1)
             except:
@@ -40,13 +45,19 @@ class WPContentParser(object):
 
     def _save_link(self, base_url, href, file_pointer):
         if not re.match(r'[a-zA-Z0-9\-_\/%.\+@]+([0-9]+x[0-9]+).(jpg|jpeg|bmp|gif|png)', href):
-            file_pointer.write(base_url + href + '\n')
+            # Not required for Apache based servers
+            # if base_url in href:
+            #     link = href
+            # else:
+            #     link = base_url + href
+            link = base_url + href
+            file_pointer.write(link + '\n')
 
     def _is_valid(self, link):
         if link is None:
             return False
 
-        for invalid_directory in ['et_temp', 'wp-content', 'thumbs', 'htm', 'zip', 'doc']:
+        for invalid_directory in ['et_temp', 'wp-content/uploads', 'thumbs', 'htm', 'zip', 'doc', 'db']:
             if invalid_directory in link:
                 return False
 
@@ -54,7 +65,7 @@ class WPContentParser(object):
 
     def _is_file(self, link):
         for ext in ['jpg', 'png', 'jpeg', 'gif', 'bmp']:
-            if ext in link:
+            if ext in link.lower():
                 return True
 
         return False
@@ -63,7 +74,7 @@ class WPContentParser(object):
         with open(self.file_name, 'r') as link_file:
             for directory_url in link_file.readlines():
                 site_name = directory_url.split('/')[2]
-                self._write(site_name)
+                self._write('Scraping ' + site_name)
                 with open(site_name + '_links.txt', 'w') as out_file:
                     self._parse_links(self.fetch.openUrl(directory_url), directory_url.strip('\n'), out_file, level=1)
 
