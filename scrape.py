@@ -57,7 +57,7 @@ class WPContentParser(object):
         if link is None:
             return False
 
-        for invalid_directory in ['et_temp', 'wp-content/uploads', 'thumbs', 'htm', 'zip', 'doc', 'db']:
+        for invalid_directory in ['et_temp', 'wp-content', 'thumbs', 'htm', 'zip', 'doc', 'db']:
             if invalid_directory in link:
                 return False
 
