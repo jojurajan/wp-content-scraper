@@ -7,6 +7,7 @@ class UrlOpener(object):
 
     def __init__(self, header_tuples=None):
         self.opener = urllib2.build_opener()
+        # TODO: Create a randomization method for the user agent.
         if header_tuples is None:
             self.opener.addheaders = [('User-agent', 'Opera/9.80 (X11; Linux i686; Ubuntu/14.10) Presto/2.12.388 Version/12.16')]
         else:
@@ -29,7 +30,6 @@ class WPContentParser(object):
             try:
                 href = link.get('href')
                 if self._is_valid(href):
-                    # self._write(href, level)
                     if self._is_file(href):
                         self._save_link(base_url, href, file_pointer)
                     else:
@@ -57,13 +57,15 @@ class WPContentParser(object):
         if link is None:
             return False
 
-        for invalid_directory in ['et_temp', 'wp-content', 'thumbs', 'htm', 'zip', 'doc', 'db']:
+        # TODO: Move this to a settings file.
+        for invalid_directory in ['et_temp', 'wp-content', 'thumbs', 'htm', 'zip', 'doc', 'db', 'Parent Directory', '.com', '#']:
             if invalid_directory in link:
                 return False
 
         return True
 
     def _is_file(self, link):
+        # TODO: Move this to a settings file.
         for ext in ['jpg', 'png', 'jpeg', 'gif', 'bmp']:
             if ext in link.lower():
                 return True
