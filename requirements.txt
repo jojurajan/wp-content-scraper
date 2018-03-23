@@ -1,2 +1,2 @@
-BeautifulSoup
+BeautifulSoup==4.4.0
 ipython
