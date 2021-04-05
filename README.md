@@ -1,7 +1,7 @@
 wp-content-scraper
 ==================
 
-This script can be used to generate urls of images stored within the `wp-content/uploads/` of a WordPress server. This script uses **Python2.7** and it would be a good practice to use a virtualenv for this scraper.
+This script can be used to generate urls of images stored within the `wp-content/uploads/` of a WordPress server. This script uses **Python3.9** and it would be a good practice to use a virtualenv for this scraper.
 
 ###How to use the script
 
@@ -25,3 +25,7 @@ The image links will be stored in files with the name `<site_name>_links.txt`.
 You can now use your favourite Download manager to import the text files and download those images to your system.
 
 P.S: ***This only works for Apache based WordPress sites.***
+
+### Troubleshooting
+
+* If the output file is empty, check if the URL is accessible.

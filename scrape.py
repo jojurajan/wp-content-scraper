@@ -1,12 +1,12 @@
 import re
-import urllib2
-from BeautifulSoup import BeautifulSoup
+from urllib.request import build_opener
+from bs4 import BeautifulSoup
 
 
 class UrlOpener(object):
 
     def __init__(self, header_tuples=None):
-        self.opener = urllib2.build_opener()
+        self.opener = build_opener()
         # TODO: Create a randomization method for the user agent.
         if header_tuples is None:
             self.opener.addheaders = [('User-agent', 'Opera/9.80 (X11; Linux i686; Ubuntu/14.10) Presto/2.12.388 Version/12.16')]
@@ -24,7 +24,7 @@ class WPContentParser(object):
         self.file_name = url_list_file
 
     def _parse_links(self, html_file, base_url, file_pointer, level):
-        page_data = BeautifulSoup(html_file)
+        page_data = BeautifulSoup(html_file, features="html.parser")
         href = ''
         for link in page_data.findAll('a'):
             try:
@@ -44,7 +44,7 @@ class WPContentParser(object):
                 file_pointer.write('\n--> Error href' + (base_url + href) + '\n')
 
     def _save_link(self, base_url, href, file_pointer):
-        if not re.match(r'[a-zA-Z0-9\-_\/%.\+@]+([0-9]+x[0-9]+).(jpg|jpeg|bmp|gif|png)', href):
+        if re.match(r'[a-zA-Z0-9\-_\/%.\+@]+([0-9]+x[0-9]+).(jpg|jpeg|bmp|gif|png)', href):
             # Not required for Apache based servers
             # if base_url in href:
             #     link = href
@@ -81,7 +81,7 @@ class WPContentParser(object):
                     self._parse_links(self.fetch.openUrl(directory_url), directory_url.strip('\n'), out_file, level=1)
 
     def _write(self, msg, indent=0):
-        print '\t' * indent, msg
+        print('\t' * indent, msg)
 
 
 if __name__ == '__main__':
